@@ -1,0 +1,18 @@
+The following is a conversion method for how long the RA motor inside the Star Adventuerer should run in seconds to 
+move the RA axis a given amount of degrees.
+
+Motor shaft -> 1st spur gear is 327:1 possibly 350:1?
+
+18RPM on 1st spur gear * 327 = 5886RPM
+
+5886RPM/70000=0.084RPM
+
+1/0.084RPM=12m
+
+360deg/12m=30deg/m=0.5deg/s
+
+to move 5deg it would take 5/0.5=10s/60s=0m10s
+
+total reduction ratio between motor shaft and dovetail bracket is 70000:1
+
+With the speed set to 150(5886RPM), the voltage is 7.5V across the motor which is optimal.

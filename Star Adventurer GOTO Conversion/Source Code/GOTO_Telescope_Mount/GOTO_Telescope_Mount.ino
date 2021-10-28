@@ -1,5 +1,16 @@
+/*
+ * This code is resposible for controlling two motors on the SkyWatcher Star Adventuer tracking mount for the purpose of converting it into a full equitorial slewing mount. The final 
+ * mount conversion has two degrees of motion control: right acension RA and declination DEC. This source code requires the ParseMotorParameters helper library which can be found at the following
+ * github archive https://github.com/fbutkovich/Star-Adventurer-GOTO-Conversion
+ * 
+ * To control the motors, a serial input string is read and parsed into five separate parameters which are formatted as follows (motor ID, motor direction, motor speed, degrees to move
+ * , holding torque). Motor ID 0 represents the DEC motor, and motor ID 1 represents the RA motor, direction is 0 for clockwise and 1 for counter-clockwise. 
+ * 
+ * Created by Fabian Butkovich, September, 2021.
+ */
+
 #include <Adafruit_MotorShield.h>
-#include "src/ParseMotorParameters/ParseMotorParameters.h"
+#include <ParseMotorParameters.h>
 #include <Adafruit_PWMServoDriver.h>
 
 #define DEBUG 1

@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map for ParseMotorParameters
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ParseMotorParameters	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+ParseInput	KEYWORD2
+ReturnMotorId	KEYWORD2
+ReturnMotorSpeed	KEYWORD2
+ReturnMotorSteps	KEYWORD2
+ReturnMotorRuntime	KEYWORD2
+ReturnMotorDirection	KEYWORD2
+ReturnHoldingTorque	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+DEG_PER_SEC	LITERAL1

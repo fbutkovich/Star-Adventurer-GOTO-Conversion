@@ -1,13 +1,13 @@
 /*
- * This code is resposible for controlling two motors on the SkyWatcher Star Adventuer tracking mount for the purpose of converting it into a full equitorial slewing mount. The final 
- * mount conversion has two degrees of motion control: right acension RA and declination DEC. This source code requires the ParseMotorParameters helper library which can be found at the following
- * github archive https://github.com/fbutkovich/Star-Adventurer-GOTO-Conversion
- * 
- * To control the motors, a serial input string is read and parsed into five separate parameters which are formatted as follows (motor ID, motor direction, motor speed, degrees to move
- * , holding torque). Motor ID 0 represents the DEC motor, and motor ID 1 represents the RA motor, direction is 0 for clockwise and 1 for counter-clockwise. 
- * 
- * Created by Fabian Butkovich, September, 2021.
- */
+   This code is resposible for controlling two motors on the SkyWatcher Star Adventuer tracking mount for the purpose of converting it into a full equitorial slewing mount. The final
+   mount conversion has two degrees of motion control: right acension RA and declination DEC. This source code requires the ParseMotorParameters helper library which can be found at the following
+   github archive https://github.com/fbutkovich/Star-Adventurer-GOTO-Conversion
+
+   To control the motors, a serial input string is read and parsed into five separate parameters which are formatted as follows (motor ID, motor direction, motor speed, degrees to move
+   , holding torque). Motor ID 0 represents the DEC motor, and motor ID 1 represents the RA motor, direction is 0 for clockwise and 1 for counter-clockwise.
+
+   Created by Fabian Butkovich, September, 2021.
+*/
 
 #include <Adafruit_MotorShield.h>
 #include <ParseMotorParameters.h>
@@ -50,6 +50,7 @@ const float DEG_PER_SEC = 0.5;
 unsigned long runinterval;
 
 unsigned long previousMillis = 0;
+unsigned long previousMillis2 = 0;
 
 //Boolean variables for storing state changes or if the holding torque power is enabled on the stepper motor
 bool holdingTorque = false;
@@ -71,7 +72,7 @@ void setup()
   //Initialize pins for controlling two relays that switch the motor power for the Right Ascension axis to two different paths
   pinMode(RA1Relay, OUTPUT);
   pinMode(RA2Relay, OUTPUT);
-  pinMode(N_SRelay, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(RA1Relay, LOW);
   digitalWrite(RA2Relay, LOW);
   digitalWrite(N_SRelay, LOW);
@@ -111,14 +112,26 @@ void loop()
     digitalWrite(RA1Relay, LOW);
     digitalWrite(RA2Relay, LOW);
     //Reset the Star Adventurer tracking due to the internal SA control board detecting an error during slewing due to disconnected motor
-    digitalWrite(N_SRelay, HIGH);
-    delay(500);
-    digitalWrite(N_SRelay, LOW);
+    if (runinterval < 1000)
+    {
+      digitalWrite(N_SRelay, HIGH);
+      previousMillis2 = currentMillis;
+      Serial.println(currentMillis - previousMillis2);
+    }
+    else
+    {
+      digitalWrite(N_SRelay, LOW);
+    }
 #if DEBUG == 1
     Serial.println("OFF");
-    Serial.println("------------------------------------------------------------------");
+    Serial.println("------------------------------");
 #endif
     CheckRAStatus = false;
+  }
+  //If making small movements < 0.5deg toggle the N_SRelay which resets the mount tracking with a minium of 1s switching speed
+  if (currentMillis - previousMillis2 > 1000 && runinterval < 1000)
+  {
+    digitalWrite(N_SRelay, LOW);
   }
 }
 
@@ -129,8 +142,8 @@ void runRAmotor(unsigned long currentMillis)
   digitalWrite(RA2Relay, HIGH);
   //Set the runtime in seconds for the RA motor
   runinterval = parsemotorparameters.ReturnMotorRuntime(DEG_PER_SEC);
-  //If making small movements < 0.5deg change the way the tracking reset behavior works
-  if (runinterval > 1000) 
+  //If making small movements < 0.5deg toggle the N_SRelay which resets the mount tracking with a minium of 1s switching speed
+  if (runinterval > 1000)
   {
     digitalWrite(N_SRelay, HIGH);
   }
@@ -204,6 +217,6 @@ void debug()
     Serial.print(runinterval);
     Serial.println("ms");
   }
-  Serial.println("------------------------------------------------------------------");
+  Serial.println("------------------------------");
 }
 #endif

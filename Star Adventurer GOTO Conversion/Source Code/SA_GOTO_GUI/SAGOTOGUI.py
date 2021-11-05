@@ -120,7 +120,11 @@ def MoveRA():
         RAString.delete('1.0', 'end')
         SerialConnection.write(bytes(string, 'utf-8'))
         SerialConnection.flush()
+<<<<<<< Updated upstream
         ReadSerialResponse()
+=======
+        ReadSerialResponse(True)
+>>>>>>> Stashed changes
 
 def MoveDE():
     string = DEString.get('1.0', 'end')
@@ -132,12 +136,29 @@ def MoveDE():
         DEString.delete('1.0', 'end')
         SerialConnection.write(bytes(string, 'utf-8'))
         SerialConnection.flush()
+<<<<<<< Updated upstream
         ReadSerialResponse()
 
 def ReadSerialResponse():
     response = SerialConnection.readlines()
     for i in response:
         SerialResponse.insert('end', i)
+=======
+        ReadSerialResponse(False)
+
+def ReadSerialResponse(RA):
+    if RA:
+        while True:
+            x = SerialConnection.readline()
+            print(str(x))
+            if 'OFF' in str(x):
+                SerialResponse.insert('end', x)
+                break
+    else:
+        response = SerialConnection.readlines()
+        for i in response:
+            SerialResponse.insert('end', i)
+>>>>>>> Stashed changes
     SerialResponse.see('end')
 
 def exitapp():

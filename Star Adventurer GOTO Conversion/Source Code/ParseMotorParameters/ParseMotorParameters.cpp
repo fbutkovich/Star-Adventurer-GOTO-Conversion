@@ -102,21 +102,22 @@ int ParseMotorParameters::ReturnMotorSteps()
 }
 
 //This function accepts a known constant "DEG_PER_SEC" and uses it to convert degrees of motion to runtime in seconds of the RA motor, the C++ function "toFloat()" is used since we need 1/10th of a degree precision
+//A compensation factor is applied to the input degrees to move as (0.042*runtime) degrees of normal tracking will be lost during the entire time the RA axis is performing a move
 unsigned long ParseMotorParameters::ReturnMotorRuntime(float DEG_PER_SEC)
 {
-  return ((numbers[3].toFloat() / DEG_PER_SEC) * 1000) + (0.042 * numbers[3].toFloat());
+  return ((numbers[3].toFloat() + (0.042 * (numbers[3].toFloat() / DEG_PER_SEC))) / DEG_PER_SEC) * 1000;
 }
 
 int ParseMotorParameters::ReturnMotorDirection()
 {
   if (numbers[1] == "1")
   {
-    //Counter-clockwise rotation
+	//Clockwise rotation
     return 1;
   }
   else if (numbers[1] == "0")
   {
-    //Clockwise rotation
+    //Counter-clockwise rotation
     return 2;
   }
   else

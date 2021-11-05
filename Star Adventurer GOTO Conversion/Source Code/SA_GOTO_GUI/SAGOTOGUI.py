@@ -42,8 +42,8 @@ def CreateSerial():
     global SerialConnection
     if SerialConnection == "":
         try:
-            SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=115200, timeout=1)
-            SerialResponse.insert('end', 'SERIAL CONNECTION CREATED: ' + SerialConnection.name + ', baudrate:115200, timeout=1\n')
+            SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=115200, timeout=0.1)
+            SerialResponse.insert('end', 'SERIAL CONNECTION CREATED: ' + SerialConnection.name + ', baudrate:115200, timeout=0.1s\n')
         except serial.SerialException:
             try:
                 raise messagebox.showwarning(message='Invalid input! could not establish serial connection with the given information, please try again.')
@@ -122,6 +122,11 @@ def MoveRA():
         response = SerialConnection.readlines()
         for i in response:
             SerialResponse.insert('end', i)
+        while True:
+            x = SerialConnection.readline()
+            if 'OFF' in str(x):
+                SerialResponse.insert('end', x)
+                break
         SerialResponse.see('end')
 
 def MoveDE():

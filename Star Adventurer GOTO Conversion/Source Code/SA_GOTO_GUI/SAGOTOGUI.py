@@ -1,6 +1,7 @@
 import serial
 import serial.tools.list_ports
 import os
+import sys
 import tkinter as tk
 from tkinter import ttk
 from tkinter import*
@@ -32,18 +33,16 @@ DestinationCoordinates = []
 
 SourceEnum = StringVar(window)
 DestinationEnum = StringVar(window)
+
 COMPortVar = IntVar()
 
 comlist = serial.tools.list_ports.comports()
-for element in comlist:
-    ConnectedSerialDevices.append(element.device)
 
 def CreateSerial():
     global SerialConnection
     if SerialConnection == "":
         try:
             SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=115200, timeout=1)
-            COMPortVar.set(1)
             SerialResponse.insert('end', 'SERIAL CONNECTION CREATED: ' + SerialConnection.name + ', baudrate:115200, timeout=1\n')
         except serial.SerialException:
             try:
@@ -52,7 +51,6 @@ def CreateSerial():
                 pass
     else:
         SerialConnection = ""
-        COMPortVar.set(0)
 
 def SerialError():
     global SerialConnection
@@ -96,14 +94,20 @@ def CalculateCoordinateDifference():
     RAdegrees = round((((coordinatedifference[0] * 60) + coordinatedifference[1] + (coordinatedifference[2] / 60)) / 60) * 15, 2)
     DEdegrees = round(coordinatedifference[3] + (coordinatedifference[4] / 60) + (coordinatedifference[5] / 3600), 2)
     CoordDiffLabel['text'] = 'Coordinate Difference RA Degrees/DE Degrees: [' + str(RAdegrees) + ',' + str(DEdegrees) + ']'
-    RAString.insert('end', '1,' + str(GetDirection(RAdegrees)) + ',20,' + str(abs(RAdegrees)) + ',0')
-    DEString.insert('end', '0,' + str(GetDirection(DEdegrees)) + ',20,' + str(abs(DEdegrees)) + ',0')
+    RAString.insert('end', '1,' + str(GetDirectionRA(RAdegrees)) + ',10,' + str(abs(RAdegrees)) + ',0')
+    DEString.insert('end', '0,' + str(GetDirectionDE(DEdegrees)) + ',10,' + str(abs(DEdegrees)) + ',0')
 
-def GetDirection(number):
+def GetDirectionRA(number):
     if number < 0:
         return 0
     else:
         return 1
+
+def GetDirectionDE(number):
+    if number < 0:
+        return 1
+    else:
+        return 0
 
 def MoveRA():
     string = RAString.get('1.0', 'end')
@@ -134,6 +138,9 @@ def MoveDE():
         for i in response:
             SerialResponse.insert('end', i)
         SerialResponse.see('end')
+
+def exitapp():
+    os._exit(0)
 
 ParseCatalogFile()
 
@@ -208,11 +215,14 @@ file = Menu(window, tearoff=0)
 topmenu.add_cascade(label='File', menu=file, state='active')
 serialmenu = Menu(file, tearoff=0)
 file.add_cascade(label='COM Device', menu=serialmenu, state='active')
-serialmenu.add_checkbutton(label=ConnectedSerialDevices[0], variable=COMPortVar, onvalue=1, offvalue=0, command=CreateSerial)
+for element in comlist:
+    if 'Arduino' in str(element):
+        ConnectedSerialDevices.append(element.device)
+        serialmenu.add_checkbutton(label=element.device, variable=COMPortVar, onvalue=1, offvalue=0, command=CreateSerial)
 file.add_separator()
 file.add_command(label='About', command=About)
 file.add_separator()
-file.add_command(label='Exit', command=window.destroy)
+file.add_command(label='Exit', command=exitapp)
 
 window.configure(menu=topmenu)
 

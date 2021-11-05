@@ -42,8 +42,9 @@ def CreateSerial():
     global SerialConnection
     if SerialConnection == "":
         try:
-            SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=115200, timeout=0.1)
-            SerialResponse.insert('end', 'SERIAL CONNECTION CREATED: ' + SerialConnection.name + ', baudrate:115200, timeout=0.1s\n')
+            SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=115200, timeout=1)
+            SerialResponse.insert('end', 'SERIAL CONNECTION CREATED: ' + SerialConnection.name + ', baudrate:115200, timeout=1\n')
+            SerialResponse.insert('end', '--------------------------------------------------------------\n')
         except serial.SerialException:
             try:
                 raise messagebox.showwarning(message='Invalid input! could not establish serial connection with the given information, please try again.')
@@ -119,15 +120,7 @@ def MoveRA():
         RAString.delete('1.0', 'end')
         SerialConnection.write(bytes(string, 'utf-8'))
         SerialConnection.flush()
-        response = SerialConnection.readlines()
-        for i in response:
-            SerialResponse.insert('end', i)
-        while True:
-            x = SerialConnection.readline()
-            if 'OFF' in str(x):
-                SerialResponse.insert('end', x)
-                break
-        SerialResponse.see('end')
+        ReadSerialResponse()
 
 def MoveDE():
     string = DEString.get('1.0', 'end')
@@ -139,10 +132,13 @@ def MoveDE():
         DEString.delete('1.0', 'end')
         SerialConnection.write(bytes(string, 'utf-8'))
         SerialConnection.flush()
-        response = SerialConnection.readlines()
-        for i in response:
-            SerialResponse.insert('end', i)
-        SerialResponse.see('end')
+        ReadSerialResponse()
+
+def ReadSerialResponse():
+    response = SerialConnection.readlines()
+    for i in response:
+        SerialResponse.insert('end', i)
+    SerialResponse.see('end')
 
 def exitapp():
     os._exit(0)

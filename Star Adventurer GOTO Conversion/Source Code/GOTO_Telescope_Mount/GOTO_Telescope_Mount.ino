@@ -116,7 +116,6 @@ void loop()
     {
       digitalWrite(N_SRelay, HIGH);
       previousMillis2 = currentMillis;
-      Serial.println(currentMillis - previousMillis2);
     }
     else
     {

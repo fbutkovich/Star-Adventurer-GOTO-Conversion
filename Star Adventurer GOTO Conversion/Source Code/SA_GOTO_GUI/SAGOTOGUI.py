@@ -77,11 +77,14 @@ def ParseCatalogFile():
 def DisplaySourceCoordinates(choice):
     choice = SourceEnum.get()
     SourceCoordLabel['text'] = 'Source Coordinates RA/DE: ' + SourceCoordinates[Targets.index(choice)]
+    CalculateCoordinateDifference()
+    ReadSerialResponse()
 
 def DisplayDestinationCoordinates(choice):
     choice = DestinationEnum.get()
     DestinationCoordLabel['text'] = 'Destination Coordinates RA/DE: ' + DestinationCoordinates[Targets.index(choice)]
     CalculateCoordinateDifference()
+    ReadSerialResponse()
 
 def CalculateCoordinateDifference():
     RAString.delete('1.0', 'end')

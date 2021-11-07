@@ -78,13 +78,13 @@ def DisplaySourceCoordinates(choice):
     choice = SourceEnum.get()
     SourceCoordLabel['text'] = 'Source Coordinates RA/DE: ' + SourceCoordinates[Targets.index(choice)]
     CalculateCoordinateDifference()
-    ReadSerialResponse()
+    SerialReadResponse()
 
 def DisplayDestinationCoordinates(choice):
     choice = DestinationEnum.get()
     DestinationCoordLabel['text'] = 'Destination Coordinates RA/DE: ' + DestinationCoordinates[Targets.index(choice)]
     CalculateCoordinateDifference()
-    ReadSerialResponse()
+    SerialReadResponse()
 
 def CalculateCoordinateDifference():
     RAString.delete('1.0', 'end')
@@ -115,33 +115,35 @@ def GetDirectionDE(number):
 
 def MoveRA():
     string = RAString.get('1.0', 'end')
-    try:
-        SerialError()
-    except TypeError:
-        pass
-    else:
-        RAString.delete('1.0', 'end')
-        SerialConnection.write(bytes(string, 'utf-8'))
-        SerialConnection.flush()
-        ReadSerialResponse()
+    RAString.delete('1.0', 'end')
+    SerialWriteData(string)
+    SerialReadResponse()
 
 def MoveDE():
     string = DEString.get('1.0', 'end')
+    DEString.delete('1.0', 'end')
+    SerialWriteData(string)
+    SerialReadResponse()
+
+def SerialWriteData(string):
     try:
         SerialError()
     except TypeError:
         pass
     else:
-        DEString.delete('1.0', 'end')
         SerialConnection.write(bytes(string, 'utf-8'))
         SerialConnection.flush()
-        ReadSerialResponse()
 
-def ReadSerialResponse():
-    response = SerialConnection.readlines()
-    for i in response:
-        SerialResponse.insert('end', i)
-    SerialResponse.see('end')
+def SerialReadResponse():
+    try:
+        SerialError()
+    except TypeError:
+        pass
+    else:
+        response = SerialConnection.readlines()
+        for i in response:
+            SerialResponse.insert('end', i)
+        SerialResponse.see('end')
 
 def exitapp():
     os._exit(0)

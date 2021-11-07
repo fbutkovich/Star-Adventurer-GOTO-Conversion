@@ -111,26 +111,12 @@ void loop()
     //Switch the RA motor physical connections back to the power provided by the Star Adventurer control board for accurate tracking
     digitalWrite(RA1Relay, LOW);
     digitalWrite(RA2Relay, LOW);
-    //Reset the Star Adventurer tracking due to the internal SA control board detecting an error during slewing due to disconnected motor
-    if (runinterval < 1000)
-    {
-      digitalWrite(N_SRelay, HIGH);
-      previousMillis2 = currentMillis;
-    }
-    else
-    {
-      digitalWrite(N_SRelay, LOW);
-    }
+    digitalWrite(N_SRelay, LOW);
 #if DEBUG == 1
     Serial.println("OFF");
     Serial.println("------------------------------");
 #endif
     CheckRAStatus = false;
-  }
-  //If making small movements < 0.5deg toggle the N_SRelay which resets the mount tracking with a minium of 1s switching speed
-  if (currentMillis - previousMillis2 > 1000 && runinterval < 1000)
-  {
-    digitalWrite(N_SRelay, LOW);
   }
 }
 
@@ -139,13 +125,9 @@ void runRAmotor(unsigned long currentMillis)
   //Switch the RA motor physical connections to the power provided by the Adafruit motor shield for fast slewing
   digitalWrite(RA1Relay, HIGH);
   digitalWrite(RA2Relay, HIGH);
+  digitalWrite(N_SRelay, HIGH);
   //Set the runtime in seconds for the RA motor
   runinterval = parsemotorparameters.ReturnMotorRuntime(DEG_PER_SEC);
-  //If making small movements < 0.5deg toggle the N_SRelay which resets the mount tracking with a minium of 1s switching speed
-  if (runinterval > 1000)
-  {
-    digitalWrite(N_SRelay, HIGH);
-  }
   //Restart the non-blocking millis() timer which is used to check how long the RA motor has been running
   previousMillis = currentMillis;
   //Setting the speed of the RA motor

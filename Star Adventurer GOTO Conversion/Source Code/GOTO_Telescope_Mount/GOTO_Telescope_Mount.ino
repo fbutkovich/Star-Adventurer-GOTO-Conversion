@@ -41,6 +41,7 @@ int RASpeed;
 /*Definition of physcial pins used to control relay on the relay shield which is responsible for toggling the direction
   the Star Adventuerer is tracking (N/S)*/
 #define N_SRelay 5
+#define TrackingENABLE 4
 
 /*This constant is derived from the method described in DegreeConversion.txt and is used to convert degrees of motion
   to runtime in seconds of the RA motor*/
@@ -72,10 +73,12 @@ void setup()
   //Initialize pins for controlling two relays that switch the motor power for the Right Ascension axis to two different paths
   pinMode(RA1Relay, OUTPUT);
   pinMode(RA2Relay, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(N_SRelay, OUTPUT);
+  pinMode(TrackingENABLE, OUTPUT);
   digitalWrite(RA1Relay, LOW);
   digitalWrite(RA2Relay, LOW);
   digitalWrite(N_SRelay, LOW);
+  digitalWrite(TrackingENABLE, LOW);
 }
 
 void loop()
@@ -111,7 +114,8 @@ void loop()
     //Switch the RA motor physical connections back to the power provided by the Star Adventurer control board for accurate tracking
     digitalWrite(RA1Relay, LOW);
     digitalWrite(RA2Relay, LOW);
-    digitalWrite(N_SRelay, LOW);
+    //digitalWrite(N_SRelay, LOW);
+    digitalWrite(TrackingENABLE, LOW);
 #if DEBUG == 1
     Serial.println("OFF");
     Serial.println("------------------------------");
@@ -125,7 +129,11 @@ void runRAmotor(unsigned long currentMillis)
   //Switch the RA motor physical connections to the power provided by the Adafruit motor shield for fast slewing
   digitalWrite(RA1Relay, HIGH);
   digitalWrite(RA2Relay, HIGH);
-  digitalWrite(N_SRelay, HIGH);
+  //digitalWrite(N_SRelay, HIGH);
+  if (parsemotorparameters.ReturnHoldingTorque() == 1)
+  {
+    digitalWrite(TrackingENABLE, HIGH);
+  }
   //Set the runtime in seconds for the RA motor
   runinterval = parsemotorparameters.ReturnMotorRuntime(DEG_PER_SEC);
   //Restart the non-blocking millis() timer which is used to check how long the RA motor has been running
@@ -138,22 +146,9 @@ void runRAmotor(unsigned long currentMillis)
 
 void runDECmotor()
 {
-  //If the holding torque boolean variable is true, then apply power to the stepper motor continously even if the motor is not activley stepping
-  if (parsemotorparameters.ReturnHoldingTorque())
-  {
-    //Set the stepper motor speed
-    DECMOTOR->setSpeed(parsemotorparameters.ReturnMotorSpeed());
-    /*Adafruit stepper motor class member accepts the following parameters
-      step(uint8_t #steps, uint8_t direction 1 or 0, uint8_t step mode) */
-    DECMOTOR->step(parsemotorparameters.ReturnMotorSteps(), parsemotorparameters.ReturnMotorDirection(), DOUBLE);
-  }
-  //If the holding torque boolean variable is false, then remove power from the stepper motor as soon as it's done moving
-  else
-  {
-    DECMOTOR->setSpeed(parsemotorparameters.ReturnMotorSpeed());
-    DECMOTOR->step(parsemotorparameters.ReturnMotorSteps(), parsemotorparameters.ReturnMotorDirection(), DOUBLE);
-    DECMOTOR->release();
-  }
+  DECMOTOR->setSpeed(parsemotorparameters.ReturnMotorSpeed());
+  DECMOTOR->step(parsemotorparameters.ReturnMotorSteps(), parsemotorparameters.ReturnMotorDirection(), DOUBLE);
+  DECMOTOR->release();
 }
 
 #if DEBUG == 1

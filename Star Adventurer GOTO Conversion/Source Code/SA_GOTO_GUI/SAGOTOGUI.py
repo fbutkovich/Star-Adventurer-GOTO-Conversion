@@ -125,8 +125,8 @@ def CalculateCoordinateDifference():
     #Convert coordinate difference for DE axis into angular degrees using Deg + Arcmin/60 + Arcsec/60
     DEdegrees = round(coordinatedifference[3] + (coordinatedifference[4] / 60) + (coordinatedifference[5] / 3600), 2)
     CoordDiffLabel['text'] = 'Coordinate Difference RA Degrees/DE Degrees: [' + str(RAdegrees) + ',' + str(DEdegrees) + ']'
-    RAString.insert('end', '1,' + str(GetDirectionRA(RAdegrees)) + ',10,' + str(abs(RAdegrees)) + ',0')
-    DEString.insert('end', '0,' + str(GetDirectionDE(DEdegrees)) + ',10,' + str(abs(DEdegrees)) + ',0')
+    RAString.insert('end', '1,' + str(GetDirectionRA(RAdegrees)) + ',10,' + str(abs(RAdegrees)) + ',1')
+    DEString.insert('end', '0,' + str(GetDirectionDE(DEdegrees)) + ',10,' + str(abs(DEdegrees)) + ',1')
 
 #Inverse direction control for RA axis
 def GetDirectionRA(number):
@@ -264,7 +264,7 @@ file.add_cascade(label='COM Device', menu=serialmenu, state='active')
 #Step through detected available serial ports and create a single dropdown menu checkbutton for only one device
 for element in comlist:
     #Detect serial ports that are either Arduino or Adafruit devices
-    if 'Arduino' or 'Adafruit' in str(element):
+    if 'Arduino' in str(element):
         ConnectedSerialDevices.append(element.device)
         serialmenu.add_checkbutton(label=element, variable=COMPortVar, onvalue=1, offvalue=0, command=CreateSerial)
         #Only allow one COM port selectable at a time

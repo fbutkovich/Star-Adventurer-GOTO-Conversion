@@ -18,7 +18,7 @@ ReturnMotorSpeed	KEYWORD2
 ReturnMotorSteps	KEYWORD2
 ReturnMotorRuntime	KEYWORD2
 ReturnMotorDirection	KEYWORD2
-ReturnHoldingTorque	KEYWORD2
+ReturnTrackingEnabled	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -6,6 +6,8 @@
    To control the motors, a serial input string is read and parsed into five separate parameters which are formatted as follows (motor ID, motor direction, motor speed, degrees to move
    , holding torque). Motor ID 0 represents the DEC motor, and motor ID 1 represents the RA motor, direction is 0 for clockwise and 1 for counter-clockwise.
 
+   This source code is meant to be used in conjunction with the python user interface SAGOTOGUI.py, which can set a current celestial
+   coordinate and destination coordinate and then compute the difference between the two and perform a telescope slew in both RA and DEC axis'
    Created by Fabian Butkovich, September, 2021.
 */
 
@@ -73,11 +75,15 @@ void setup()
   //Initialize pins for controlling two relays that switch the motor power for the Right Ascension axis to two different paths
   pinMode(RA1Relay, OUTPUT);
   pinMode(RA2Relay, OUTPUT);
+  //This relay is unused but can be used if tracking direction control is desired (e.g. N/S)
   pinMode(N_SRelay, OUTPUT);
+  //This relay controls the 12V power provided to the SA internal control board to either enable/disabled star tracking
   pinMode(TrackingENABLE, OUTPUT);
   digitalWrite(RA1Relay, LOW);
   digitalWrite(RA2Relay, LOW);
+  //Default SA N tracking mode for northern hemisphere
   digitalWrite(N_SRelay, LOW);
+  //Default enabled power to the SA
   digitalWrite(TrackingENABLE, LOW);
 }
 
@@ -95,7 +101,7 @@ void loop()
     parsemotorparameters.ParseInput(input);
     /*If motor ID returned from "ParseInput" is 1, then run the RA motor for calculated period of time that translates to
       degrees moved*/
-    if (parsemotorparameters.ReturnMotorId() == 1)
+    if (parsemotorparameters.ReturnMotorId() == 0)
     {
       runRAmotor(currentMillis);
     }
@@ -114,8 +120,12 @@ void loop()
     //Switch the RA motor physical connections back to the power provided by the Star Adventurer control board for accurate tracking
     digitalWrite(RA1Relay, LOW);
     digitalWrite(RA2Relay, LOW);
-    //digitalWrite(N_SRelay, LOW);
-    digitalWrite(TrackingENABLE, LOW);
+    /*Toggle power to the Star Adventurer control board to reset tracking after a move is performed, if tracking is
+      disabled when the input serial string is given (0=disabled, 1=enabled), then the SA power will not be restored*/
+    if (parsemotorparameters.ReturnTrackingEnabled() == 1)
+    {
+      digitalWrite(TrackingENABLE, LOW);
+    }
 #if DEBUG == 1
     Serial.println("OFF");
     Serial.println("------------------------------");
@@ -129,11 +139,8 @@ void runRAmotor(unsigned long currentMillis)
   //Switch the RA motor physical connections to the power provided by the Adafruit motor shield for fast slewing
   digitalWrite(RA1Relay, HIGH);
   digitalWrite(RA2Relay, HIGH);
-  //digitalWrite(N_SRelay, HIGH);
-  if (parsemotorparameters.ReturnHoldingTorque() == 1)
-  {
-    digitalWrite(TrackingENABLE, HIGH);
-  }
+  //Toggle power to the Star Adventurer control board to reset tracking after a move is performed
+  digitalWrite(TrackingENABLE, HIGH);
   //Set the runtime in seconds for the RA motor
   runinterval = parsemotorparameters.ReturnMotorRuntime(DEG_PER_SEC);
   //Restart the non-blocking millis() timer which is used to check how long the RA motor has been running
@@ -156,7 +163,7 @@ void runDECmotor()
 void debug()
 {
   //Retrieve debugging info
-  if (parsemotorparameters.ReturnMotorId() == 0)
+  if (parsemotorparameters.ReturnMotorId() == 1)
   {
     Serial.println("Motor: DEC");
     Serial.print("Speed: ");
@@ -172,10 +179,10 @@ void debug()
     }
     Serial.print("Motor Steps: ");
     Serial.println(parsemotorparameters.ReturnMotorSteps());
-    Serial.print("Holding Torque Enabled?: ");
-    Serial.println(parsemotorparameters.ReturnHoldingTorque());
+    Serial.print("Normal Tracking Enabled?: ");
+    Serial.println(parsemotorparameters.ReturnTrackingEnabled());
   }
-  else if (parsemotorparameters.ReturnMotorId() == 1)
+  else if (parsemotorparameters.ReturnMotorId() == 0)
   {
     Serial.println("Motor: RA");
     Serial.print("Speed: ");
@@ -192,6 +199,8 @@ void debug()
     Serial.print("Motor Runtime: ");
     Serial.print(runinterval);
     Serial.println("ms");
+    Serial.print("Normal Tracking Enabled?: ");
+    Serial.println(parsemotorparameters.ReturnTrackingEnabled());
   }
   Serial.println("------------------------------");
 }

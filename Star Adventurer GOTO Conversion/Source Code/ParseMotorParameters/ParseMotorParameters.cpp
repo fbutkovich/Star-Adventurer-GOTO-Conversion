@@ -126,7 +126,7 @@ int ParseMotorParameters::ReturnMotorDirection()
   }
 }
 
-bool ParseMotorParameters::ReturnHoldingTorque()
+bool ParseMotorParameters::ReturnTrackingEnabled()
 {
   if (numbers[4].toInt() == 1)
   {

@@ -125,8 +125,8 @@ def CalculateCoordinateDifference():
     #Convert coordinate difference for DE axis into angular degrees using Deg + Arcmin/60 + Arcsec/60
     DEdegrees = round(coordinatedifference[3] + (coordinatedifference[4] / 60) + (coordinatedifference[5] / 3600), 2)
     CoordDiffLabel['text'] = 'Coordinate Difference RA Degrees/DE Degrees: [' + str(RAdegrees) + ',' + str(DEdegrees) + ']'
-    RAString.insert('end', '1,' + str(GetDirectionRA(RAdegrees)) + ',10,' + str(abs(RAdegrees)) + ',1')
-    DEString.insert('end', '0,' + str(GetDirectionDE(DEdegrees)) + ',10,' + str(abs(DEdegrees)) + ',1')
+    RAString.insert('end', '0,' + str(GetDirectionRA(RAdegrees)) + ',10,' + str(abs(RAdegrees)) + ',1')
+    DEString.insert('end', '1,' + str(GetDirectionDE(DEdegrees)) + ',10,' + str(abs(DEdegrees)) + ',1')
 
 #Inverse direction control for RA axis
 def GetDirectionRA(number):

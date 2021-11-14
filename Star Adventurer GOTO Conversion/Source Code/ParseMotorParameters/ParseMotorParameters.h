@@ -23,7 +23,7 @@ class ParseMotorParameters
 		int ReturnMotorSteps();
 		int ReturnMotorDirection();
 		unsigned long ReturnMotorRuntime(float DEG_PER_SEC);
-		bool ReturnHoldingTorque();
+		bool ReturnTrackingEnabled();
 };
 
 #endif

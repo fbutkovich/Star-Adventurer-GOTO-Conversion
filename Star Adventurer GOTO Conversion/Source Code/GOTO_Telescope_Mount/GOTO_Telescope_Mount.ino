@@ -4,7 +4,8 @@
    github archive https://github.com/fbutkovich/Star-Adventurer-GOTO-Conversion
 
    To control the motors, a serial input string is read and parsed into five separate parameters which are formatted as follows (motor ID, motor direction, motor speed, degrees to move
-   , holding torque). Motor ID 0 represents the DEC motor, and motor ID 1 represents the RA motor, direction is 0 for clockwise and 1 for counter-clockwise.
+   , tracking enabled). Motor ID 0 represents the RA motor, and motor ID 1 represents the DEC motor, direction is 0 for clockwise and 1 for counter-clockwise, speed is in RPMs and is ignored
+   for the RA axis as it moves at a fixed speed, tracking enabled is 0 for disabled and 1 for enabled. 
 
    This source code is meant to be used in conjunction with the python user interface SAGOTOGUI.py, which can set a current celestial
    coordinate and destination coordinate and then compute the difference between the two and perform a telescope slew in both RA and DEC axis'

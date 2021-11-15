@@ -1,8 +1,8 @@
 /*
   ParseMotorParameters.h - Library for parsing serial data input parameters for controlling a standard 1.8deg NEMA 17 stepper motor and standard 
-  DC brushed motor, the input parameters are received in the following format: (motorId, motorDirection, motorSpeed(RPM), motorDegrees, holdingTorque). 
-  An example is "0,1,20,320,1", which would translate to moving the stepper motor at 20RPMs counterclockwise for 177 1.8 degree steps with the holding 
-  torque enabled. 
+  DC brushed motor, the input parameters are received in the following format: (motorId, motorDirection, motorSpeed(RPM), motorDegrees, trackingEnabled). 
+  An example is "1,1,20,320,1", which would translate to moving the stepper motor at 20RPMs counterclockwise for 177 1.8 degree steps with normal tracking 
+  set to resume after the move is performed. 
   Created by Fabian Butkovich, September, 2021.
 */
 #include "Arduino.h"

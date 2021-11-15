@@ -3,4 +3,4 @@ Source code, schematics and 3D printing files for the conversion of the SkyWatch
 brushed DC motor inside the stock SA. The current version of the Python GUI was developed with Python 3.9. The included "Adafruit_Motor_Shield_V2_Library" MUST be used vs. the default version available to the public, as it was modified to 
 support accurate stepper motor stepping. The helper library "ParseMotorParameters" must also be placed inside the C:\Users\username\Documents\Arduino\libraries folder if modifying/re-uploading the source code. 
 
-![image](/assets/images/thumbnail.jpg)
+![Converted SA Mount](/Star-Adventurer-GOTO-Conversion/assets/thumbnail.png)

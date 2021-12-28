@@ -62,7 +62,7 @@ bool CheckRAStatus = false;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   //Begin serial I2C communication with adafruit motor shield @ 800Hz
   AFMS.begin();
   /*

@@ -53,7 +53,7 @@ def CreateSerial():
     global SerialConnection
     if SerialConnection == "":
         try:
-            SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=115200, timeout=0, writeTimeout=0)
+            SerialConnection = serial.Serial(port=ConnectedSerialDevices[0], baudrate=9600, timeout=0, writeTimeout=0)
             SerialResponse.insert('end', 'SERIAL CONNECTION CREATED: ' + SerialConnection.name + ', baudrate:' + str(SerialConnection.baudrate) + ', timeout=' + str(SerialConnection.timeout) + ', writeTimeout=' + str(SerialConnection.writeTimeout) + '\n')
             SerialResponse.insert('end', '--------------------------------------------------------------\n')
         except serial.SerialException:

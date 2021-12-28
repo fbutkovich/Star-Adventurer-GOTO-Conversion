@@ -54,10 +54,8 @@ const float DEG_PER_SEC = 0.5;
 unsigned long runinterval;
 
 unsigned long previousMillis = 0;
-unsigned long previousMillis2 = 0;
 
-//Boolean variables for storing state changes or if the holding torque power is enabled on the stepper motor
-bool holdingTorque = false;
+//Boolean variables for storing state changes
 bool CheckRAStatus = false;
 
 void setup()

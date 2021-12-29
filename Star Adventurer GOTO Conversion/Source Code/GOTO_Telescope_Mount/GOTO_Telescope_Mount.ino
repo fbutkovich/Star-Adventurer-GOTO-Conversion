@@ -62,7 +62,7 @@ void setup()
 {
   Serial.begin(9600);
   //Begin serial I2C communication with adafruit motor shield @ 800Hz
-  AFMS.begin();
+  AFMS.begin(800);
   /*Setting the speed of the RA motor speed constant, this speed parameter does not directly correlate to RPM, instead
     reference DegreeConversion.txt for the steps taken to derive RPM equivalent*/
   RASpeed = 150;
@@ -148,7 +148,7 @@ void runRAmotor(unsigned long currentMillis)
 void runDECmotor()
 {
   DECMOTOR->setSpeed(parsemotorparameters.ReturnMotorSpeed());
-  DECMOTOR->step(parsemotorparameters.ReturnMotorSteps(), parsemotorparameters.ReturnMotorDirection(), INTERLEAVE);
+  DECMOTOR->step(parsemotorparameters.ReturnMotorSteps(), parsemotorparameters.ReturnMotorDirection(), DOUBLE);
   DECMOTOR->release();
 }
 

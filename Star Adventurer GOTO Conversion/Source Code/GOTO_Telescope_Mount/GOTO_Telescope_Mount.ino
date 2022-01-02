@@ -61,8 +61,8 @@ bool CheckRAStatus = false;
 void setup()
 {
   Serial.begin(9600);
-  //Begin serial I2C communication with adafruit motor shield @ 800Hz
-  AFMS.begin(800);
+  //Begin serial I2C communication with adafruit motor shield @ 500Hz
+  AFMS.begin(500);
   /*Setting the speed of the RA motor speed constant, this speed parameter does not directly correlate to RPM, instead
     reference DegreeConversion.txt for the steps taken to derive RPM equivalent*/
   RASpeed = 150;
